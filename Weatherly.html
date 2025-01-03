@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weatherly - Your Weather Companion</title> <!-- Title set here -->
+
+  <!-- Add a favicon (the same logo used on the website) -->
+  <link rel="icon" href="img/favicon.png" type="image/png"> <!-- Link to your favicon.ico file -->
+
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Global Styles */
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #00aaff, #0099cc);
+      animation: skyAnimation 20s ease-in-out infinite;
+    }
+
+    /* Sky animation to simulate different times of the day */
+    @keyframes skyAnimation {
+      0% { background: linear-gradient(135deg, #00aaff, #0099cc); }
+      25% { background: linear-gradient(135deg, #ff9900, #ffcc66); }
+      50% { background: linear-gradient(135deg, #ff6600, #ff9999); }
+      75% { background: linear-gradient(135deg, #6600ff, #3300cc); }
+      100% { background: linear-gradient(135deg, #00aaff, #0099cc); }
+    }
+
+    /* Cloud animation for movement */
+    .cloud {
+      position: absolute;
+      top: 20%;
+      width: 250px;
+      height: 120px;
+      background-color: white;
+      border-radius: 50%;
+      box-shadow: 50px 10px 0 5px rgba(255, 255, 255, 0.8);
+      animation: cloudAnimation 25s linear infinite;
+      opacity: 0.9;
+    }
+    .cloud-two {
+      position: absolute;
+      top: 40%;
+      width: 350px;
+      height: 150px;
+      background-color: white;
+      border-radius: 50%;
+      box-shadow: 80px 20px 0 5px rgba(255, 255, 255, 0.7);
+      animation: cloudAnimation 30s linear infinite;
+      opacity: 0.8;
+    }
+    .cloud-three {
+      position: absolute;
+      top: 60%;
+      width: 150px;
+      height: 100px;
+      background-color: white;
+      border-radius: 50%;
+      box-shadow: 30px 10px 0 5px rgba(255, 255, 255, 0.7);
+      animation: cloudAnimation 35s linear infinite;
+      opacity: 0.75;
+    }
+
+    /* Cloud animation to move horizontally */
+    @keyframes cloudAnimation {
+      0% { left: -250px; }
+      100% { left: 100%; }
+    }
+
+    /* Chat container and logo styles */
+    .chat-container {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      height: 450px;
+      max-height: 100%;
+      overflow-y: auto;
+    }
+
+    /* Updated header style with better fonts */
+    .chat-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 700;
+      font-family: 'Merriweather', serif;
+      color: #00796b;
+      margin-bottom: 20px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .logo svg {
+      width: 50px;
+      height: 50px;
+      animation: sunAnimation 3s ease-in-out infinite;
+    }
+
+    @keyframes sunAnimation {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    /* Chat box and input styles */
+    .chat-box {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+    }
+
+    .chat-input {
+      display: flex;
+      gap: 15px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    input[type="text"] {
+      width: 75%;
+      padding: 12px;
+      font-size: 18px;
+      font-family: 'Roboto', sans-serif;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    input[type="text"]:focus {
+      border-color: #00796b;
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 18px;
+      font-family: 'Roboto', sans-serif;
+      background-color: #00796b;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #004d40;
+    }
+
+    /* Weather info styles */
+    .weather-info {
+      padding: 15px;
+      background-color: #f1f1f1;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .loading-spinner {
+      margin: 0 auto;
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #00796b;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .error-message {
+      color: red;
+      font-size: 18px;
+      text-align: center;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    .weather-icon {
+      background-color: #ffffff;
+      border-radius: 50%;
+      padding: 10px;
+      margin-bottom: 10px;
+      width: 60px;
+      height: 60px;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .control-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cloud"></div>
+  <div class="cloud-two"></div>
+  <div class="cloud-three"></div>
+
+  <div class="chat-container">
+    <div class="chat-header">
+      <div class="logo">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <circle cx="32" cy="32" r="30" fill="#00796b"/>
+          <circle cx="45" cy="19" r="10" fill="yellow">
+            <animate attributeName="cy" from="19" to="25" dur="1s" keyTimes="0;0.5;1" repeatCount="indefinite"/>
+          </circle>
+          <path d="M20 42c0 2.21 1.79 4 4 4h16c2.21 0 4-1.79 4-4V20c0-2.21-1.79-4-4-4H24c-2.21 0-4 1.79-4 4v22z" fill="white"/>
+        </svg>
+        Weatherly
+      </div>
+    </div>
+
+    <div class="chat-box" id="chat-box">
+      <!-- Chat messages will appear here -->
+    </div>
+    
+    <div class="chat-input">
+      <input type="text" id="city" placeholder="Enter city" />
+      <button onclick="getWeather()">Get Weather</button>
+    </div>
+
+    <!-- Control Buttons -->
+    <div class="control-buttons">
+      <button onclick="clearData()">Clear</button>
+      <button onclick="toggleMusic()">Music</button>
+    </div>
+  </div>
+
+  <script>
+    const apiKey = '744087e918ff3bad333b1c74580431f0';
+    let musicPlaying = false; 
+    let audio = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'); 
+
+    // Function to get weather data
+    async function getWeather() {
+      const city = document.getElementById('city').value.trim();
+      const chatBox = document.getElementById('chat-box');
+      chatBox.innerHTML = ''; // Clear previous results
+
+      if (city === '') return;
+
+      // Show loading spinner
+      const loadingSpinner = document.createElement('div');
+      loadingSpinner.classList.add('loading-spinner');
+      chatBox.appendChild(loadingSpinner);
+
+      // Make API request to OpenWeatherMap
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        // Remove loading spinner
+        chatBox.removeChild(loadingSpinner);
+
+        if (data.cod === '404') {
+          const errorMessage = document.createElement('p');
+          errorMessage.classList.add('error-message');
+          errorMessage.textContent = 'City not found. Please try again.';
+          chatBox.appendChild(errorMessage);
+          return;
+        }
+
+        // Extracting weather data
+        const { main, weather, name, wind, sys } = data;
+        const weatherInfo = `
+          <div class="weather-info">
+            <h3>${name}</h3>
+            <p>${weather[0].description}</p>
+            <div class="weather-icon">
+              <img src="http://openweathermap.org/img/wn/${weather[0].icon}.png" alt="${weather[0].description}" />
+            </div>
+            <p><strong>${main.temp}°C</strong></p>
+            <p>Humidity: ${main.humidity}%</p>
+            <p>Wind: ${wind.speed} m/s</p>
+            <p>Sunrise: ${new Date(sys.sunrise * 1000).toLocaleTimeString()}</p>
+            <p>Sunset: ${new Date(sys.sunset * 1000).toLocaleTimeString()}</p>
+          </div>
+        `;
+        
+        chatBox.innerHTML = weatherInfo;
+      } catch (error) {
+        chatBox.innerHTML = '<p class="error-message">Error fetching weather data. Please try again.</p>';
+        console.error(error);
+      }
+    }
+
+    // Function to clear weather data and input
+    function clearData() {
+      document.getElementById('city').value = ''; 
+      document.getElementById('chat-box').innerHTML = ''; 
+    }
+
+    // Function to toggle music
+    function toggleMusic() {
+      if (musicPlaying) {
+        audio.pause(); 
+        musicPlaying = false;
+      } else {
+        audio.play(); 
+        musicPlaying = true;
+      }
+    }
+  </script>
+
+</body>
+</html>
